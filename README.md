@@ -6,6 +6,12 @@ Source package version: **1.0.0** ([VERSION](VERSION)).
 
 This package contains 180 project scripts covering RNA-seq and WGS preprocessing, candidate construction, allelic analysis, fine-mapping, evidence integration, and figure generation. Original stage and script names are retained.
 
+## Workflow overview
+
+[![Overview of candidate transcript discovery, phased allele-specific expression, regulatory evidence, GWAS fine-mapping, and evidence integration.](assets/workflow.png)](assets/workflow.pdf)
+
+Figure 1 from the accompanying manuscript summarizes the analysis framework for prioritizing candidate loci by integrating transcriptomic, allele-specific, and behavioral GWAS evidence. [View the full-resolution PDF](assets/workflow.pdf) or read the [stage-by-stage workflow](docs/WORKFLOW.md).
+
 Before running a script, replace its `/path/to/...` placeholders, install its dependencies, and supply the required inputs. Stages require separate configuration.
 
 ## Contents
