@@ -1,0 +1,4 @@
+component	role	source	reference	release_location	verification_scope
+Allelome.LINK.R	external runtime dependency	https://github.com/AndergassenLab/Allelome.LINK	18c67e7d829b38fa777f042557c2e29b0a8e893d	/path/to/software/Allelome.LINK/Allelome.LINK.R	available local file matches official pinned content
+PLASMA	external runtime dependency	https://github.com/austintwang/plasma	c5fe317d2a59814c0a9275c2b3216e3c978f7cc9	/path/to/software/plasma/run_plasma.py	base identifies source lineage, not a verified historical-run snapshot; local changes and requirements in docs/PLASMA.md; complete source not bundled; patch and reconstructed-file checksums in patches/; application instructions in docs/PLASMA.md
+audit_panel_alignment.py	bundled plotting support	bundled source	source package 1.0.0	support/figure_alignment/audit_panel_alignment.py	bundled helper required by three figure scripts

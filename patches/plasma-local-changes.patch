@@ -1,0 +1,71 @@
+diff --git a/plasma/finemap.py b/plasma/finemap.py
+index 835a262..3eb1463 100644
+--- a/plasma/finemap.py
++++ b/plasma/finemap.py
+@@ -131,7 +131,7 @@ class Finemap(object):
+         if self.mask_imbalance is not None:
+             return
+ 
+-        self.mask_imbalance = np.full(np.size(self.counts_A, True))
++        self.mask_imbalance = np.full(np.size(self.counts_A), True)
+ 
+     def _calc_mask_total_exp(self):
+         """
+diff --git a/run_plasma.py b/run_plasma.py
+index 5b52d99..99d9168 100755
+--- a/run_plasma.py
++++ b/run_plasma.py
+@@ -19,13 +19,20 @@ def run_plasma(args):
+ 	params["counts_A"] = np.loadtxt(args.counts_A_path)
+ 	params["hap_B"] = np.loadtxt(args.hap_B_path)
+ 	params["counts_B"] = np.loadtxt(args.counts_B_path)
+-	params["total_exp"] = np.loadtxt(args.total_exp_path)
++	if args.total_exp_path is not None:
++		params["total_exp"] = np.loadtxt(args.total_exp_path)
++	else:
++		params["total_exp"] = params["counts_A"] + params["counts_B"]
+ 
+ 	# Set overdispersion
+-	if overdispersion_path is not None:
+-		params["overdispersion"] = np.loadtxt(args.hap_A_path)
++	if args.overdispersion_path is not None:
++		params["overdispersion"] = np.loadtxt(args.overdispersion_path)
+ 	else:
+-		params["overdispersion"] = args.overdispersion_global
++		params["overdispersion"] = np.full(
++			np.size(params["counts_A"]),
++			args.overdispersion_global,
++			dtype=float,
++		)
+ 
+ 	if args.as_only and args.qtl_only:
+ 		raise ValueError("PLASMA cannot be in both AS-Only and QTL-Only modes")
+@@ -46,6 +53,9 @@ def run_plasma(args):
+ 	credible_set = model.get_causal_set(args.confidence)
+ 	ppas = model.get_ppas()
+ 	
++	if not os.path.isdir(args.out_dir):
++		os.makedirs(args.out_dir)
++
+ 	cset_path = os.path.join(args.out_dir, "cset.txt")
+ 	ppas_path = os.path.join(args.out_dir, "ppas.txt")
+ 
+@@ -63,13 +73,13 @@ if __name__ == '__main__':
+ 	
+ 	parser.add_argument('--total_exp_path', '-t', help="Path to total QTL phenotype file (Default: Sum of counts files)")
+ 	parser.add_argument('--overdispersion_path', '-o', help="Path to individual-level AS overdispersion file (Default: Global overdispersion)")
+-	parser.add_argument('--overdispersion_global', '-g', default=0., help="Global AS overdispersion (Default: 0)")
++	parser.add_argument('--overdispersion_global', '-g', type=float, default=0., help="Global AS overdispersion (Default: 0)")
+ 	parser.add_argument('--as_only', '-a', action='store_true', help="AS-Only Mode")
+ 	parser.add_argument('--qtl_only', '-q', action='store_true', help="QTL-Only Mode")
+ 	parser.add_argument('--search_mode', '-s', default="exhaustive", help="Causal configuration search mode (Default: \"exhaustive\")")
+-	parser.add_argument('--max_causal', '-m', default=1, help="Maximum number of causal configurations searched (Default: 1)")
+-	parser.add_argument('--confidence', '-c', default=0.95, help="Credible set confidence level (Default: 0.95)")
++	parser.add_argument('--max_causal', '-m', type=int, default=1, help="Maximum number of causal configurations searched (Default: 1)")
++	parser.add_argument('--confidence', '-c', type=float, default=0.95, help="Credible set confidence level (Default: 0.95)")
+ 	
+ 	args = parser.parse_args()
+ 
+-	run_plasma(args)
+\ No newline at end of file
++	run_plasma(args)
